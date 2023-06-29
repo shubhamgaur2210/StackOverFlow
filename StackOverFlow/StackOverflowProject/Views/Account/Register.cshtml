@@ -1,0 +1,125 @@
+﻿@model StackOverflowProject.ViewModels.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<div class="row mt-5">
+    <div class="col-sm-12">
+        <h1>Register</h1>
+        @using (Html.BeginForm( "register", "account", FormMethod.Post, new { @class = "needs-validation", @novalidate = "novalidate"}))
+        {
+            @Html.AntiForgeryToken();
+            <div class="container col-sm-3">
+                <div class="row">
+                    @Html.LabelFor(model => model.Name)
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @pattern = "^[a-zA-Z ]*$", 
+                                    @required = "required", @autofocus = "autofocus" } })
+                    <div class="valid-feedback">
+                        Looks Good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Invalid Name! alphabet only
+                    </div>
+                </div>
+                <div class="row">
+                    @Html.LabelFor(model => model.Email)
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @required = "required", @id = "txtEmail" } })
+                    <div class="valid-feedback" id="valid-feedback">
+                        Looks Good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Invalid Email!
+                    </div>
+                    <small class="email-exist text-danger"></small>
+                </div>
+                <div class="row">
+                    @Html.LabelFor(model => model.Mobile)
+                    @Html.EditorFor(model => model.Mobile, new { htmlAttributes = new { @class = "form-control", @pattern = @"^[6789]\d{9}$", 
+                                    @required = "required" } })
+                    <div class="valid-feedback">
+                        Looks Good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Invalid Mobile No.!
+                    </div>
+                </div>
+                <div class="row">
+                    @Html.LabelFor(model => model.Password)
+                    @Html.EditorFor(model => model.Password, new
+                    {
+                        htmlAttributes = new
+                        {
+                            @class = "form-control",
+                            type = "password",
+                                    @pattern = ".{6,}",
+                            @required = "required",
+                            @oninput = "form.ConfirmPassword.pattern = escapeRegExp(this.value)"
+                        }
+                    })
+                    <div class="valid-feedback">
+                        Looks Good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Password must contain 6 character!
+                    </div>
+                </div>
+                <div class="row">
+                    @Html.LabelFor(model => model.ConfirmPassword)
+                    @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control", @type = "password",
+                                    @required = "required", @name = "ConfirmPassword" }})
+                    <div class="valid-feedback">
+                        Looks Good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Password must match!
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <button type="submit" class="btn btn-success">Register</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+
+    $("#txtEmail").blur(function () {
+        $.ajax({
+            url: "/api/account?email=" + $("#txtEmail").val(), type: "GET",
+            success:
+                function (response) {
+                    if (response == "Not Found") {
+                        $(".email-exist").text("");
+                    }   
+                    else {
+                        $(".email-exist").text("but email already registered");
+                    }
+                },
+            error:
+                function () {
+
+                }
+        })
+    });
+
+    $("a[href='/account/register']").addClass("active");
+
+    $(document).on("submit", ".needs-validation", validate);
+
+    $(".needs-validation input").blur(validate);
+
+    function validate(event)
+    {
+        if ($(".needs-validation")[0].checkValidity() == false || $(".email-exist").text() != "") {
+            event.preventDefault();
+        }
+            $(".needs-validation")[0].classList.add("was-validated");
+    }
+
+    function escapeRegExp(str) {
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
+
+</script>

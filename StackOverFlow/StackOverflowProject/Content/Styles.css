@@ -1,0 +1,17 @@
+﻿.navbar a:hover
+{
+    color : aliceblue;
+    text-decoration : underline;
+}
+
+.dropdown-menu a:hover
+{
+    /*color:;*/
+
+}
+
+.hidden
+{
+    display: none;
+}
+

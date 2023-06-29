@@ -1,0 +1,73 @@
+﻿@model StackOverflowProject.ViewModels.LoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<div class="row m-5 p-5">
+    <div class="col-sm-3 mx-auto p-5 border border-dark border-2 rounded-2">
+        <div class="loginbox">
+            <h4 class="mb-4">Login</h4>
+
+            @using (Html.BeginForm("login", "account", FormMethod.Post, new { @class = "needs-validation", @novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken();
+                <div class="row">
+                    @Html.LabelFor(model => model.Email)
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @required = "required"} })
+                    <div class="valid-feedback" id="valid-feedback">
+                        Looks Good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Invalid Email!
+                    </div>
+                </div>
+                <div class="row">
+                    @Html.LabelFor(model => model.Password)
+                    @Html.EditorFor(model => model.Password, new
+                    {
+                        htmlAttributes = new
+                        {
+                            @class = "form-control",
+                            type = "password",
+                            @pattern = ".{6,}",
+                            @required = "required"
+                        }
+                    })
+                    <div class="valid-feedback">
+                        Looks Good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Password must contain 6 character!
+                    </div>
+                </div>
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger text-decoration-none val" })
+                <br />
+                <div class="row ">
+                    <button type="submit" class="btn btn-success">Login</button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $("a[href='/account/login']").addClass("active");
+
+    $(document).on("submit", ".needs-validation", validate);
+    $(".needs-validation input").blur(validate);
+
+    function validate(event) {
+        if ($(".needs-validation")[0].checkValidity() == false || $(".email-exist").text() != "") {
+            event.preventDefault();
+        }
+        $(".needs-validation")[0].classList.add("was-validated");
+    }
+
+    window.setTimeout(function () {
+        $(".val").fadeTo(500, 0).slideUp(500, function () {
+            $(this).remove();
+        });
+    }, 4000);
+</script>
